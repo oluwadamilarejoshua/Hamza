@@ -1,0 +1,977 @@
+---
+output:
+  html_document:
+    df_print: paged
+  Date: 14th May, 2020
+  title: "Assignment"
+  pdf_document: default
+  Author: null
+  word_document: default
+---
+
+# Question 1
+
+#### Question 1a.
+
+The probabilty of obtaining no matching pair is evaluated below
+
+```{r}
+# The box contains 2n shoes, we can choose 2r shoes out of 2n shoes in (2n Combination 2r) ways
+# Then we have to avoid a complete pair
+# While choosing 2r shoes out of the n pairs of shoes, we first choose r pairs out of n pairs.
+# This can be done in (n Combination r) ways.
+# from each of these r pairs, choose r single (unmatching) shoes.
+# This can be done in 2^r ways.
+# Thus the number of favourable ways is (n Combination r) * 2^r
+# Hence, the probability of the required event is given as
+
+# probOfObtainingOnlyOneMatchingPair = [(n Combination r) * 2^r] / (2n Combination 2r)
+```
+
+#### Question 1b.
+
+The probabilty of obtaining only one matching pair is evaluated below
+
+```{r}
+# The box contains 2n shoes, we can choose 2r shoes out of 2n shoes in (2n Combination 2r) ways
+# We can choose one pair out of n pairs in (n Combination 1) ways
+# Then we have to avoid a complete pair
+# While choosing (2r - 2) shoes out of the remaining (n - 1) pairs of shoes, we first choose (r-1) pairs out of (n-1) pairs.
+# This can be done in (n-1 Combination r-1) ways.
+# from each of these (r-1) pairs, choose (r-1) single (unmatching) shoes.
+# This can be done in 2^(r-1) ways.
+# Thus the number of favourable ways is [(n Combination 1) * (n-1 Combination r-1)] * 2^(r-1)
+# Hence, the probability of the required event is given as
+
+# probOfObtainingOnlyOneMatchingPair = {[(n Combination 1) * (n-1 Combination r-1)] * 2^(r-1)} / (2n Combination 2r)
+```
+
+#### Question 1c.
+
+The probability of obtain exactly 2 matching pairs is evaluated below
+
+```{r}
+# The box contains 2n shoes, we can choose 2r shoes out of 2n shoes in (2n Combination 2r) ways
+# We can choose two pair out of n pairs in (n Combination 2) ways
+# Then we have to avoid a complete pair
+# While choosing (2r - 4) shoes out of the remaining (n - 2) pairs of shoes, we first choose (r-2) pairs out of (n-2) pairs.
+# This can be done in (n-2 Combination r-2) ways.
+# from each of these (r-2) pairs, choose (r-2) single (unmatching) shoes.
+# This can be done in 2^(r-2) ways.
+# Thus the number of favourable ways is [(n Combination 2) * (n-2 Combination r-2)] * 2^(r-2)
+# Hence, the probability of the required event is given as
+
+# probOfObtainingOnlyTwoMatchingPair = {[(n Combination 2) * (n-2 Combination r-2)] * 2^(r-2)} / (2n Combination 2r)
+```
+
+#### Question 1d.
+
+The probability of obtain exactly r matching pairs is evaluated below
+
+```{r}
+# The box contains 2n shoes, we can choose 2r shoes out of 2n shoes in (2n Combination 2r) ways
+# We can choose r pair out of n pairs in (n Combination r) ways
+# Hence, the probability of the required event is given as
+
+# probOfObtainingOnlyRMatchingPair = (n Combination r) / (2n Combination 2r)
+```
+
+
+# Question 2
+
+### Importing the data into R
+
+The data provided (chelsea.xls) is an unstructuured data, therefore the data was edited using the notepad and saved as a comma separated value (csv) before it was imported into R.
+The sample size is accessed and saved for future use.
+
+```{r}
+chelseaData = read.csv("chelseaToUse.csv", header = T)
+sampleSize = nrow(chelseaData)
+sampleSize
+```
+
+## Question 2a
+
+Find out the probabilities P(Chelsea wins), P(Chelsea loses), P(Chelsea Draws). This includes all the results both home and away.
+
+### Solution
+
+#### Sorting the data
+
+A new variable (chelseaResults) was generated with focus on the outcome of the matches for Chelsea FC; this is done such that irrespective of location (home or away), the outcome of the match relative to the club is evaluated. Therefore, the entry of this variable is "W" for every match chelsea won (irrespective of home or away), "D" is the entry of this variable for every drawn match, and "L" for every match chelsea lost (irrespective of home or away). The variable is computed and generated below
+
+```{r}
+attach(chelseaData)
+chelseaResults = list()
+for (outcome in 1:sampleSize) {
+  if (home[outcome] == "Chelsea"){
+    if (result[outcome] == "H"){
+      chelseaResults[outcome] = "W"
+    }else if (result[outcome] == "D"){
+      chelseaResults[outcome] = "D"
+    }else{
+      chelseaResults[outcome] = "L"
+    }
+  } else if (away[outcome] == "Chelsea"){
+    if (result[outcome] == "H"){
+      chelseaResults[outcome] = "L"
+    }else if (result[outcome] == "D"){
+      chelseaResults[outcome] = "D"
+    }else{
+      chelseaResults[outcome] = "W"
+    }
+  }
+}
+head(chelseaResults)
+```
+
+#### Separating the occurences of Wins, Draws, and Loses of Chelsea FC
+
+The number of Chelsea Fc wins can be accessed by the counts of "W"s in the generated variable (chelseaResults), also are the number of draws and loses. These are assigned to variables below for use in later computationd
+
+```{r}
+chelseaWins = length(chelseaResults[chelseaResults == "W"])
+chelseaWins
+chelseaDraws = length(chelseaResults[chelseaResults == "D"])
+chelseaDraws
+chelseaLoses = length(chelseaResults[chelseaResults == "L"])
+chelseaLoses
+```
+
+#### Probability of Chelsea win
+
+The probability of Chelsea wins irrespective of location is evaluated below
+
+```{r}
+probOfChelseaWin = chelseaWins / sampleSize
+probOfChelseaWin
+```
+
+#### Probability of Chelsea draw
+
+The probability of Chelsea draws irrespective of location is evaluated below
+
+```{r}
+probOfChelseaDraw = chelseaDraws / sampleSize
+probOfChelseaDraw
+```
+
+#### Probability of Chelsea loss
+
+The probability of Chelsea loses irrespective of location is evaluated below
+
+```{r}
+probOfChelseaLose = chelseaLoses / sampleSize
+probOfChelseaLose
+```
+
+#### Confirming Result
+
+If the above results are true, the sum of the three mutually exclusive but collectively exhaustive events should be 1; hence, the check below
+
+```{r}
+sumOfProb = probOfChelseaWin + probOfChelseaDraw + probOfChelseaLose
+sumOfProb
+```
+
+#### Binding the new variable to the existing data
+The newly generted variable is binded to the existing data below
+
+```{r}
+newChelseaResults = as.character(chelseaResults)
+newChelseaData = cbind(chelseaData, newChelseaResults)
+head(newChelseaData)
+```
+
+
+## Question 2b
+
+#### Conditional probabilities
+
+Find out the conditional probabilities:
+
+1. P(Chelsea Wins | Playing at Home)
+2. P(Chelsea Wins | Playing away)
+3. P(Chelsea Draws | Playing at Home)
+4. P(Chelsea Draws | Playing away)
+5. P(Chelsea Loses | Playing at Home)
+6. P(Chelsea Loses | Playing away)
+
+Please make comparison and a general conclusion.
+
+#### Solution
+
+The variables to be used in the computation of these probabilities are prepared below
+
+```{r}
+library(dplyr)
+attach(newChelseaData)
+head(newChelseaData)
+
+chelseaHome = filter(newChelseaData, home == "Chelsea")
+chelseaAway = filter(newChelseaData, away == "Chelsea")
+
+numOfChelseaGamesAtHome = nrow(chelseaHome)
+numOfChelseaGamesAtHome
+
+numOfChelseaWinsAtHome = length(chelseaHome$newChelseaResults[chelseaHome$newChelseaResults == "W"])
+numOfChelseaWinsAtHome
+
+numOfChelseaDrawsAtHome = length(chelseaHome$newChelseaResults[chelseaHome$newChelseaResults == "D"])
+numOfChelseaDrawsAtHome
+
+numOfChelseaLosesAtHome = length(chelseaHome$newChelseaResults[chelseaHome$newChelseaResults == "L"])
+numOfChelseaLosesAtHome
+
+numOfChelseaGamesAtHome - (numOfChelseaWinsAtHome + numOfChelseaDrawsAtHome + numOfChelseaLosesAtHome) == 0
+
+numOfChelseaGamesAway = nrow(chelseaAway)
+numOfChelseaGamesAway
+
+numOfChelseaWinsAway = length(chelseaAway$newChelseaResults[chelseaAway$newChelseaResults == "W"])
+numOfChelseaWinsAway
+
+numOfChelseaDrawsAway = length(chelseaAway$newChelseaResults[chelseaAway$newChelseaResults == "D"])
+numOfChelseaDrawsAway
+
+numOfChelseaLosesAway = length(chelseaAway$newChelseaResults[chelseaAway$newChelseaResults == "L"])
+numOfChelseaLosesAway
+
+numOfChelseaGamesAway - (numOfChelseaWinsAway + numOfChelseaDrawsAway + numOfChelseaLosesAway) == 0
+
+```
+
+#### 1.  P(Chelsea Wins | Playing at Home)
+
+The probability of Chelsea FC win while playing at home is evaluated below
+
+```{r}
+probOfChelseaWinAtHome = numOfChelseaWinsAtHome / numOfChelseaGamesAtHome
+probOfChelseaWinAtHome
+```
+
+#### 2. P(Chelsea Wins | Playing away)
+
+The probability of Chelsea FC win while playing away is evaluatd below
+
+```{r}
+probOfChelseaWinAway = numOfChelseaWinsAway / numOfChelseaGamesAway
+probOfChelseaWinAway
+```
+
+#### 3. P(Chelsea Draws | Playing at Home)
+
+The probability of Chelsea FC draw while playing at home is evaluated below
+
+```{r}
+probOfChelseaDrawAtHomme = numOfChelseaDrawsAtHome / numOfChelseaGamesAtHome
+probOfChelseaDrawAtHomme
+```
+
+#### 4. P(Chelsea Draws | Playing away)
+
+The probability of Chelsea FC draw while playing away is evaluated below
+
+```{r}
+probOfChelseaDrawAway = numOfChelseaDrawsAway / numOfChelseaGamesAway
+probOfChelseaDrawAway
+```
+
+#### 5. P(Chelsea Loses | Playing at Home)
+
+The probability of Chelsea FC loses while playing at home is evaluated below
+
+```{r}
+probOfChelseaLosesAtHome = numOfChelseaLosesAtHome / numOfChelseaGamesAtHome
+probOfChelseaLosesAtHome
+```
+
+#### 6. P(Chelsea Loses | Playing away)
+
+The probability of Chelsea FC loses while playing away is evaluated below
+
+```{r}
+probOfChelseaLosesAway = numOfChelseaLosesAway / numOfChelseaGamesAway
+probOfChelseaLosesAway
+```
+
+#### Confirming Results
+
+To evaluate if outcomes are true, the mutually exclusive nut collectively exhaustive sets must have a cummulative probability of 1; hence, the check below
+
+```{r}
+probOfChelseaWinAtHome + probOfChelseaDrawAtHomme + probOfChelseaLosesAtHome == 1
+probOfChelseaWinAway + probOfChelseaDrawAway + probOfChelseaLosesAway == 1
+```
+
+#### Comparisons and General conclusions
+
+The win and draw probabilities of Chelse FC home and away games are compared below
+
+```{r}
+probOfChelseaWinAtHome > probOfChelseaWinAway
+
+probOfChelseaDrawAtHomme > probOfChelseaDrawAway
+probOfChelseaDrawAtHomme < probOfChelseaDrawAway
+
+probOfChelseaLosesAtHome > probOfChelseaLosesAway
+probOfChelseaLosesAtHome < probOfChelseaLosesAway
+```
+
+The above output shows that Chelsea FC is more likely to win a home match than an away match; also, Chelsea FC is more likely to draw an away match compared to a home match; the output also shows that Chelsea FC is more likely to lose an away match compared to the ones played at home.
+
+## Question 2c.
+Find H(Chelsea Results) this includes results in both home and away games
+
+The Entropy of Chelsea results (in bits) is evaluated below.
+
+```{r}
+productOfProbOfChelseaWinAndItsLog = probOfChelseaWin * log2(probOfChelseaWin)
+productOfProbOfChelseaDrawAndItsLog = probOfChelseaDraw * log2(probOfChelseaDraw)
+productOfProbOfChelseaLossAndItsLog = probOfChelseaLose * log2(probOfChelseaLose)
+
+theEntropyOfChelseaResults = -1 * (productOfProbOfChelseaWinAndItsLog + productOfProbOfChelseaDrawAndItsLog + productOfProbOfChelseaLossAndItsLog)
+
+theEntropyOfChelseaResults
+```
+
+## Question 2d.
+
+Is knowing whether Chelsea plays at home or away a good indicator in knowing the result of CFC games? Show your justification (answering just yes or no will not be given any marks) by calculating all the information necessary using the knowledge you have learnt so far in the unit.
+
+```{r}
+probOfChelseaWinAtHome
+probOfChelseaWin
+
+winProbDiffBetwnHomeAndOverallWinRate = probOfChelseaWinAtHome - probOfChelseaWin
+winProbDiffBetwnHomeAndOverallWinRate
+
+probOfChelseaWinAway
+winProbDiffBetwnOverallWinRateAndAwayWin = probOfChelseaWin - probOfChelseaWinAway
+winProbDiffBetwnOverallWinRateAndAwayWin
+```
+
+The difference in the probability values of the above quantities shows that the additional information (which is Chelsea FC playing at home or away) has made the probabilities more structured towards the particular focus of ground (home or away) where they are playing.
+
+## Part 2
+#### Analyzing effects of previous results on future results
+
+The Binary variable is computed below
+
+```{r}
+binary = list()
+for (i in 1:sampleSize) {
+  if(newChelseaData$newChelseaResults[i] == "W"){
+    binary[i] = 1
+  }else {
+    binary[i] = 0
+  }
+}
+head(binary)
+
+binary = as.integer(binary)
+effectData = cbind(newChelseaData, binary)
+head(effectData)
+
+```
+
+The quantities needed for later computations are evaluated below
+
+```{r}
+winPrevWinNow = list()
+winPrevNotWinNow = list()
+notWinPrevWinNow = list()
+notWinPrevNotWinNow = list()
+
+for (i in 2:sampleSize) {
+  if (effectData$binary[i] == 1 && effectData$binary[i-1] == 1) {
+    winPrevWinNow = append(winPrevWinNow, effectData$binary[i-1])
+  } else if (effectData$binary[i] == 1 && effectData$binary[i-1] == 0) {
+    winPrevNotWinNow = append(winPrevNotWinNow, effectData$binary[i-1])
+  } else if (effectData$binary[i] == 0 && effectData$binary[i-1] == 1) {
+    notWinPrevWinNow = append(notWinPrevWinNow, effectData$binary[i-1])
+  } else {
+    notWinPrevNotWinNow = append(notWinPrevNotWinNow, effectData$binary[i-1])
+  }
+}
+
+winWin = length(winPrevWinNow)
+winLoss = length(winPrevNotWinNow)
+lossWin = length(notWinPrevWinNow)
+lossLoss = length(notWinPrevNotWinNow)
+
+winWin
+winLoss
+lossWin
+lossLoss
+
+sumOfForm = winWin + winLoss +lossWin + lossLoss
+sumOfForm + 1 == sampleSize
+# There is an extra one because the first match is not evaluated in this analysis as it does not have a previous match count
+```
+
+## Question 2e.
+
+The Joint probabilities are given as follows
+
+```{r}
+probOfWinPrevWinNow = winWin / sumOfForm
+probOfWinPrevWinNow
+
+probOfWinPreNotWinNow = winLoss / sumOfForm
+probOfWinPreNotWinNow
+
+probOfNotWinPrevWinNow = lossWin / sumOfForm
+probOfNotWinPrevWinNow
+
+probOfNotWinPrevNotWinNow = lossLoss / sumOfForm
+probOfNotWinPrevNotWinNow
+
+```
+
+#### Result check / confirmation
+
+The probabilities are mutually exclusive but collectively exhaustive, therefore their sum should be one; hence, the check below
+
+```{r}
+sumOfFormProb = probOfWinPrevWinNow + probOfWinPreNotWinNow + probOfNotWinPrevWinNow + probOfNotWinPrevNotWinNow
+sumOfFormProb
+```
+
+## Question 2f.
+
+The conditional probability of Chelsea FC winning a game given that they won their previous match is evaluated as follows
+
+```{r}
+sumOfGameOutcomeWhenPrevIsWon = winWin + winLoss
+
+probOfWinGameGivenHaveWonPrev = winWin / sumOfGameOutcomeWhenPrevIsWon
+probOfWinGameGivenHaveWonPrev
+```
+
+## Question 2g.
+
+The conditional probability of Chelsea FC winning a game given that they won their previous match is evaluated as follows
+
+```{r}
+sumOfGameOutcomeWhenPrevIsNotWon = lossWin + lossLoss
+
+probOfWinGameGivenHaveNotWonPrev = lossWin / sumOfGameOutcomeWhenPrevIsNotWon
+probOfWinGameGivenHaveNotWonPrev
+```
+
+## Question 2h.
+
+The difference between the winning probabilities when they won previous match and when they did not win previous match is eveluated below
+
+```{r}
+diffInProbGivenPrevResult = probOfWinGameGivenHaveWonPrev - probOfWinGameGivenHaveNotWonPrev
+diffInProbGivenPrevResult
+```
+
+Based on the above output I do not think that the previous gamme's result have a significant effect on the players.
+
+## Question 2i.
+
+The probability of CFC not winning their next two games given that they won their previous game is evaluated below
+
+```{r}
+probOfNotWinningNextGameGivenWonPrev = winLoss / (winWin + winLoss)
+probOfNotWinningNextGameGivenWonPrev
+
+probOfNotWinningTheGameAfterTheNextGivenNotWonPrev = lossLoss / (lossWin + lossLoss)
+probOfNotWinningTheGameAfterTheNextGivenNotWonPrev
+
+probOfNotWinningNextTwoGames = probOfNotWinningNextGameGivenWonPrev * probOfNotWinningTheGameAfterTheNextGivenNotWonPrev
+
+probOfNotWinningNextTwoGames
+```
+
+# Question 3
+
+The evaluation of he expected value and the variance of this random variable is given below
+
+```{r}
+# X = {x1, x2, ..., xn}
+# The expectation is given as
+# E(X) = Integral[i = 1, ...][(x[i] * P(x[i]))]
+
+# The Variance is evaluated as
+# E(X^2) = Integral[i = 1, ...][((x[i])^2 * P(x[i]))]
+# V(X) = E(X^2) - [E(X)]^2
+
+```
+
+# Question 4
+
+The teaching team of FIT5197 is required to prepare 4 questions each week for the next week’s tutorial. The number of questions created in a week is said to have a Poisson distribution with mean 6.
+
+The provided information are prepared for use below
+
+```{r}
+lambda = 6
+k = 4
+```
+
+
+## Question 4a.
+
+Find the probability that the teaching team manages to write enough questions for the following week?
+
+```{r}
+poissProbOfEnoughQuestions = ((lambda ^ k) * exp(-(lambda))) / factorial(k)
+poissProbOfEnoughQuestions
+```
+
+## Question 4b.
+
+Since some of the tutors in the teaching team are also responsible for other units from FIT, for each week, there is a probability of 40% that only half of the team will work on the questions. If that is the case, the teaching team can only create 3 questions on average. If the teaching team fails to finish 4 questions one week, what is the probability that only half of the team works that week?
+
+The solution is given below
+
+```{r}
+probOfHalfOfTeamWork = 40 / 100
+probOfHalfOfTeamWork
+
+```
+
+## Question 4c.
+
+On week 12, the teaching team decides to no longer limit to 4 questions, and instead use every question they create. If a student has a 40% chance of correctly answering questions, and this student is expected to answer 2 questions correctly in the coming tutorial, what is the probability that the whole teaching team worked on creating the questions that week?
+
+The solution is given below
+
+```{r}
+# The probability that the entire teaching team worked on creating the questions that week is the same as every week aas the additional information provided cannot influence the probability
+```
+
+# Question 5
+
+The maximum likelihood estimation the exponential distribution is a probability distribution for non-negative real numbers.
+
+## Question 5a.
+
+Imagine we are given a sample of n observations  𝑦=(𝑦1,...,𝑦𝑛) . Write down the joint probability of this sample of data, under the assumption that it came from an exponential distribution with log-scale parameter  𝑣  (i.e., write down the likelihood of this data). 
+
+The joint probability of this sample of datalikelihood expression is given below
+
+```{r}
+#  jointProbOfY1ToYn = prod(exp((-exp(-v)) * y[i] - v))
+```
+
+## Question 5b.
+
+Take the negative logarithm of your likelihood expression and write down the negative loglikelihood of the data  𝑦  under the exponential model with log-scale  𝑣 . Simplify this expression
+
+The solution is presented below
+
+```{r}
+# By further solving the expression in 5a, the likelihood expression is derived as
+# sum(y[i]) * (ne^(-nv)) -nv^(n-1)
+# By taking the nagative logarithm of this expression, wwe obtain
+# -log(sum(y[i])) - log(n) + (nv) + log(n) - (n-1)log(v)
+# -log(sum(y[i])) + (nv) - (n-1)log(v)
+```
+
+## Question 5c.
+
+Derive the maximum likelihood estimator of v
+
+The solution is presented below
+
+```{r}
+# From 5b. above, 
+# -log(sum(y[i])) + (nv) - (n-1)log(v)
+# By differentiating the above expression w.r.t. v and setting the derivative to zero,
+# n - ((n - 1) / v) = 0
+# n = ((n - 1) / v)
+# nv = n - 1
+# v(est) = (n - 1) / n
+```
+
+## Question 5d.
+
+Determine the approximate bias and variance of the maximum likelihood estimator of 𝑣  for the exponential distribution.
+
+```{r}
+# From the question, the variance of y is exp(2v)
+# Since the joint distribution has v(est) to be (n - 1) / n, the  variance is calculated to be
+# var(Y) = exp(2((n - 1) / n))
+```
+
+# Question 6
+
+Central Limit Theorem
+Sampling Process: Assume that we randomly select samples of the same size  𝑛  an infinite number of times from a population that follows a Poisson distribution with mean of  𝜆 , and then, we calculate the mean of scores in each sample.
+
+## Question 6a.
+
+What does Central Limit Theorem tell us about the sampling distribution of the sample mean?
+
+```{r}
+# The central limit theorem states that the averages of equally weighted samples from any distribution are normally distributed.
+```
+
+## Question 6b.
+
+For three different Poisson populations with mean of  𝜆1  = 1,  𝜆2  = 5 and  𝜆3  = 20, we will do the sampling four separate times -- for small samples (n=10), for samples of 100 subjects (n=100) and 1000 subjects (n=1000), and once for big samples (n=10000).
+
+Based on your answer from 6.a, compute the parameter values for each sampling distribution in R.
+
+```{r}
+set.seed(12345678)
+sampleOfSize10andMean1 = rpois(10, 1)
+head(sampleOfSize10andMean1)
+
+sampleOfSize10andMean5 = rpois(10, 5)
+head(sampleOfSize10andMean5)
+
+sampleOfSize10andMean20 = rpois(10, 20)
+head(sampleOfSize10andMean20)
+
+sampleOfSize100andMean1 = rpois(100, 1)
+head(sampleOfSize100andMean1)
+
+sampleOfSize100andMean5 = rpois(100, 5)
+head(sampleOfSize100andMean5)
+
+sampleOfSize100andMean20 = rpois(100, 20)
+head(sampleOfSize100andMean20)
+
+sampleOfSize1000andMean1 = rpois(1000, 1)
+head(sampleOfSize1000andMean1)
+
+sampleOfSize1000andMean5 = rpois(1000, 5)
+head(sampleOfSize1000andMean5)
+
+sampleOfSize1000andMean20 = rpois(1000, 20)
+head(sampleOfSize1000andMean20)
+
+sampleOfSize10000andMean1 = rpois(10000, 1)
+head(sampleOfSize10000andMean1)
+
+sampleOfSize10000andMean5 = rpois(10000, 5)
+head(sampleOfSize10000andMean5)
+
+sampleOfSize10000andMean20 = rpois(10000, 20)
+head(sampleOfSize10000andMean20)
+
+
+```
+
+The evaluation of the sampling distribution 
+
+```{r}
+sampDistOfSampWithMean1 = c(mean(sampleOfSize10andMean1), mean(sampleOfSize100andMean1), mean(sampleOfSize1000andMean1), mean(sampleOfSize10000andMean1))
+sampDistOfSampWithMean1
+
+sampDistOfSampWithMean5 = c(mean(sampleOfSize10andMean5), mean(sampleOfSize100andMean5), mean(sampleOfSize1000andMean5), mean(sampleOfSize10000andMean5))
+sampDistOfSampWithMean5
+
+sampDistOfSampWithMean20 = c(mean(sampleOfSize10andMean20), mean(sampleOfSize100andMean20), mean(sampleOfSize1000andMean20), mean(sampleOfSize10000andMean20))
+sampDistOfSampWithMean20
+```
+
+The parameter values of the sampling distributions are:
+
+```{r}
+meanOfSampDistOfSampWithMean1 = mean(sampDistOfSampWithMean1)
+meanOfSampDistOfSampWithMean1
+
+meanOfSampDistOfSampWithMean5 = mean(sampDistOfSampWithMean5)
+meanOfSampDistOfSampWithMean5
+
+meanOfSampDistOfSampWithMean20 = mean(sampDistOfSampWithMean20)
+meanOfSampDistOfSampWithMean20
+
+```
+
+## Question 6c.
+
+In this question, you are asked to experimentally justify the result in the CLT Theorem.
+
+For different sample sizes of  𝑛  = 10, 100 and 1000, use 50000 simulations (i.e. to approximate the infinite times we drew samples as mentioned before) to implement the sampling process.
+
+From those 50000 sample means, compute the mean and standard deviation parameters (3 sample sizes and 3  𝜆  rates, 9 pairs of parameters in total).
+
+Discuss how the results reflect the CLT. Plot the results ( mean and standard deviation separately) to demonstrate any effects you want to discuss.
+
+```{r}
+library(ggplot2) # Package to be used for plots
+reps = 50000 # number of replicates
+set.seed(0)
+
+# The sampling distribution simulation of samples with size 10 and mean of 2 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean2andSize10 = replicate(reps, mean(rpois(10, 2))) # replicate
+head(sampDistWithMean2andSize10)
+meanOfSampDistWithMean2andSize10 = mean(sampDistWithMean2andSize10)
+meanOfSampDistWithMean2andSize10
+
+standDevOfSampDistWithMean2andSize10 = sqrt(meanOfSampDistWithMean2andSize10)
+standDevOfSampDistWithMean2andSize10
+
+
+
+
+# The sampling distribution simulation of samples with size 100 and mean of 2 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean2andSize100 = replicate(reps, mean(rpois(100, 2))) # replicate
+head(sampDistWithMean2andSize100)
+meanOfSampDistWithMean2andSize100 = mean(sampDistWithMean2andSize100)
+meanOfSampDistWithMean2andSize100
+
+standDevOfSampDistWithMean2andSize100 = sqrt(meanOfSampDistWithMean2andSize100)
+standDevOfSampDistWithMean2andSize100
+
+
+
+
+# The sampling distribution simulation of samples with size 1000 and mean of 2 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean2andSize1000 = replicate(reps, mean(rpois(1000, 2))) # replicate
+head(sampDistWithMean2andSize1000)
+meanOfSampDistWithMean2andSize1000 = mean(sampDistWithMean2andSize1000)
+meanOfSampDistWithMean2andSize1000
+
+standDevOfSampDistWithMean2andSize1000 = sqrt(meanOfSampDistWithMean2andSize1000)
+standDevOfSampDistWithMean2andSize1000
+
+
+
+
+# The sampling distribution simulation of samples with size 10 and mean of 4 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean4andSize10 = replicate(reps, mean(rpois(10, 4))) # replicate
+head(sampDistWithMean4andSize10)
+meanOfSampDistWithMean4andSize10 = mean(sampDistWithMean4andSize10)
+meanOfSampDistWithMean4andSize10
+
+standDevOfSampDistWithMean4andSize10 = sqrt(meanOfSampDistWithMean4andSize10)
+standDevOfSampDistWithMean4andSize10
+
+
+
+
+
+# The sampling distribution simulation of samples with size 100 and mean of 4 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean4andSize100 = replicate(reps, mean(rpois(100, 4))) # replicate
+head(sampDistWithMean4andSize100)
+meanOfSampDistWithMean4andSize100 = mean(sampDistWithMean4andSize100)
+meanOfSampDistWithMean4andSize100
+
+standDevOfSampDistWithMean4andSize100 = sqrt(meanOfSampDistWithMean4andSize100)
+standDevOfSampDistWithMean4andSize100
+
+
+
+
+
+# The sampling distribution simulation of samples with size 1000 and mean of 4 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean4andSize1000 = replicate(reps, mean(rpois(1000, 4))) # replicate
+head(sampDistWithMean4andSize1000)
+meanOfSampDistWithMean4andSize1000 = mean(sampDistWithMean4andSize1000)
+meanOfSampDistWithMean4andSize1000
+
+standDevOfSampDistWithMean4andSize1000 = sqrt(meanOfSampDistWithMean4andSize1000)
+standDevOfSampDistWithMean4andSize1000
+
+
+
+
+
+# The sampling distribution simulation of samples with size 10 and mean of 6 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean6andSize10 = replicate(reps, mean(rpois(10, 6))) # replicate
+head(sampDistWithMean6andSize10)
+meanOfSampDistWithMean6andSize10 = mean(sampDistWithMean6andSize10)
+meanOfSampDistWithMean6andSize10
+
+standDevOfSampDistWithMean6andSize10 = sqrt(meanOfSampDistWithMean6andSize10)
+standDevOfSampDistWithMean6andSize10
+
+
+
+
+
+# The sampling distribution simulation of samples with size 100 and mean of 6 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean6andSize100 = replicate(reps, mean(rpois(100, 6))) # replicate
+head(sampDistWithMean6andSize100)
+meanOfSampDistWithMean6andSize100 = mean(sampDistWithMean6andSize100)
+meanOfSampDistWithMean6andSize100
+
+standDevOfSampDistWithMean6andSize100 = sqrt(meanOfSampDistWithMean6andSize100)
+standDevOfSampDistWithMean6andSize100
+
+
+
+
+
+# The sampling distribution simulation of samples with size 1000 and mean of 6 is done below as well as the evaluation of the sampling distribution parameter
+
+sampDistWithMean6andSize1000 = replicate(reps, mean(rpois(1000, 6))) # replicate
+head(sampDistWithMean6andSize1000)
+meanOfSampDistWithMean6andSize1000 = mean(sampDistWithMean6andSize1000)
+meanOfSampDistWithMean6andSize1000
+
+standDevOfSampDistWithMean6andSize1000 = sqrt(meanOfSampDistWithMean6andSize1000)
+standDevOfSampDistWithMean6andSize1000
+
+
+# The lists of the sampling means
+
+listOfMeansOfSize10 = c(meanOfSampDistWithMean2andSize10, meanOfSampDistWithMean4andSize10, meanOfSampDistWithMean6andSize10)
+
+ggplot(data.frame(listOfMeansOfSize10), aes(listOfMeansOfSize10)) + 
+  geom_histogram(aes(y=..density..))
+
+listOfMeansOfSize100 = c(meanOfSampDistWithMean2andSize100, meanOfSampDistWithMean4andSize100, meanOfSampDistWithMean6andSize100)
+
+ggplot(data.frame(listOfMeansOfSize100), aes(listOfMeansOfSize100)) + 
+  geom_histogram(aes(y=..density..))
+
+listOfMeansOfSize1000 = c(meanOfSampDistWithMean2andSize1000, meanOfSampDistWithMean4andSize1000, meanOfSampDistWithMean6andSize1000)
+
+ggplot(data.frame(listOfMeansOfSize1000), aes(listOfMeansOfSize1000)) + 
+  geom_histogram(aes(y=..density..))
+
+# The lists of the sampling standard deviation
+
+listOfStandDevOfSize10 = c(standDevOfSampDistWithMean2andSize10, standDevOfSampDistWithMean4andSize10, standDevOfSampDistWithMean6andSize10)
+
+ggplot(data.frame(listOfStandDevOfSize10), aes(listOfStandDevOfSize10)) + 
+  geom_histogram(aes(y=..density..))
+
+listOfStandDevOfSize100 = c(standDevOfSampDistWithMean2andSize100, standDevOfSampDistWithMean4andSize100, standDevOfSampDistWithMean6andSize100)
+
+ggplot(data.frame(listOfStandDevOfSize100), aes(listOfStandDevOfSize100)) + 
+  geom_histogram(aes(y=..density..))
+
+listOfStandDevOfSize1000 = c(standDevOfSampDistWithMean2andSize1000, standDevOfSampDistWithMean4andSize1000, standDevOfSampDistWithMean6andSize1000)
+
+ggplot(data.frame(listOfStandDevOfSize1000), aes(listOfStandDevOfSize1000)) + 
+  geom_histogram(aes(y=..density..))
+
+listOfMeans = c(as.vector(listOfMeansOfSize10), as.vector(listOfMeansOfSize100), as.vector(listOfMeansOfSize1000))
+listOfStandDev = c(as.vector(listOfStandDevOfSize10), as.vector(listOfStandDevOfSize100), as.vector(listOfStandDevOfSize1000))
+
+```
+
+## Question 6d.
+
+When rate  𝜆1  = 1 and  𝜆2  = 5 and sample size  𝑛  is 10 or 100, obtain the z scores of the sample means (from 50000 simulations). Plot their distributions in a histogram with the theoretical Gaussian curve overlaid.
+
+Note that for sample size 100, the plots overlay very nicely. But what happens with sample size 10? Explain the differences between the four plots.
+
+```{r}
+set.seed(1234)
+rootOfSize = sqrt(50000)
+sampDistWithMean1andSize10 = replicate(reps, mean(rpois(10, 1))) # replicate
+head(sampDistWithMean1andSize10)
+meanOfSampDistWithMean1andSize10 = mean(sampDistWithMean1andSize10)
+meanOfSampDistWithMean1andSize10
+
+standDevOfSampDistWithMean1andSize10 = sqrt(meanOfSampDistWithMean1andSize10)
+standDevOfSampDistWithMean1andSize10
+
+standErrorOfSampDistWithMean1andSize10 = standDevOfSampDistWithMean1andSize10 / rootOfSize
+xbarMuDiffOfSampDistWithMean1andSize10 = meanOfSampDistWithMean1andSize10 - 1 # The population mean
+
+zSccoreOfSampDistWithMean1andSize10 = xbarMuDiffOfSampDistWithMean1andSize10 / standErrorOfSampDistWithMean1andSize10
+
+zSccoreOfSampDistWithMean1andSize10
+
+
+
+
+sampDistWithMean1andSize100 = replicate(reps, mean(rpois(100, 1))) # replicate
+head(sampDistWithMean1andSize100)
+meanOfSampDistWithMean1andSize100 = mean(sampDistWithMean1andSize100)
+meanOfSampDistWithMean1andSize100
+
+standDevOfSampDistWithMean1andSize100 = sqrt(meanOfSampDistWithMean1andSize100)
+standDevOfSampDistWithMean1andSize100
+
+standErrorOfSampDistWithMean1andSize100 = standDevOfSampDistWithMean1andSize100 / rootOfSize
+xbarMuDiffOfSampDistWithMean1andSize100 = meanOfSampDistWithMean1andSize100 - 1 # The population mean
+
+zSccoreOfSampDistWithMean1andSize100 = xbarMuDiffOfSampDistWithMean1andSize100 / standErrorOfSampDistWithMean1andSize100
+
+zSccoreOfSampDistWithMean1andSize100
+
+
+
+
+sampDistWithMean5andSize10 = replicate(reps, mean(rpois(10, 5))) # replicate
+head(sampDistWithMean5andSize10)
+meanOfSampDistWithMean5andSize10 = mean(sampDistWithMean5andSize10)
+meanOfSampDistWithMean5andSize10
+
+standDevOfSampDistWithMean5andSize10 = sqrt(meanOfSampDistWithMean5andSize10)
+standDevOfSampDistWithMean5andSize10
+
+standErrorOfSampDistWithMean5andSize10 = standDevOfSampDistWithMean5andSize10 / rootOfSize
+xbarMuDiffOfSampDistWithMean5andSize10 = meanOfSampDistWithMean5andSize10 - 5 # The population mean
+
+zSccoreOfSampDistWithMean5andSize10 = xbarMuDiffOfSampDistWithMean5andSize10 / standErrorOfSampDistWithMean5andSize10
+
+zSccoreOfSampDistWithMean5andSize10
+
+
+
+
+sampDistWithMean5andSize100 = replicate(reps, mean(rpois(100, 5))) # replicate
+head(sampDistWithMean5andSize100)
+meanOfSampDistWithMean5andSize100 = mean(sampDistWithMean5andSize100)
+meanOfSampDistWithMean5andSize100
+
+standDevOfSampDistWithMean5andSize100 = sqrt(meanOfSampDistWithMean5andSize100)
+standDevOfSampDistWithMean5andSize100
+
+standErrorOfSampDistWithMean5andSize100 = standDevOfSampDistWithMean5andSize100 / rootOfSize
+xbarMuDiffOfSampDistWithMean5andSize100 = meanOfSampDistWithMean5andSize100 - 5 # The population mean
+
+zSccoreOfSampDistWithMean5andSize100 = xbarMuDiffOfSampDistWithMean5andSize100 / standErrorOfSampDistWithMean5andSize100
+
+zSccoreOfSampDistWithMean5andSize100
+
+
+frameForPlots = data.frame(sampDistWithMean1andSize10, sampDistWithMean1andSize100, sampDistWithMean5andSize10, sampDistWithMean5andSize100)
+
+#for (i in c(sampDstWithMean1andSize10, sampDistWithMean1andSize100, sampDistWithMean5andSize10, #sampDistWithMean5ndSize100)) {
+#  toUsezforPlot =as.vector(frameForPlots[i])
+#  ggplot(frameForlots, aes(x = toUsezforPlot)) + 
+#    geom_histogra(aes(y =..density..)) + stat_function(fu#n = dnorm, args = vector(mean = mean(toUsezforPlot), sd = sd(toUsezforPlot)))
+#}
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
